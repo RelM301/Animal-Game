@@ -4,47 +4,26 @@ using UnityEngine;
 
 public class PrefabController : MonoBehaviour
 {
-    public int prefabNumber = 1; // Unique identifier for each prefab
-    public int pointValue = 10; // Point value for each prefab
-    private GameManager gameManager;
+    private string intheSpawner = "y";
+    private SpawnManager spawnManager;
 
     private void Start()
     {
-       
+        spawnManager = FindObjectOfType<SpawnManager>();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void Update()
     {
-        PrefabController otherPrefab = other.GetComponent<PrefabController>();
-
-        if (otherPrefab != null)
+        if (intheSpawner == "y" && spawnManager != null)
         {
-            if (prefabNumber == otherPrefab.prefabNumber)
-            {
-                MergePrefabs(otherPrefab);
-            }
-            else
-            {
-                // Handle when different prefabs touch (e.g., accumulate in the box)
-                gameManager.UpdateScore(); // Assuming this method doesn't need an argument
-            }
+            transform.position = spawnManager.spawnPoint.position;
         }
-        else
+
+        if(Input.GetMouseButtonUp(0))
         {
-            // Handle when a prefab touches the top border (game over condition)
-            gameManager.GameOver();
+            GetComponent<Rigidbody2D>().gravityScale = 1;
+            intheSpawner = "n";
+            spawnManager.SpawnedYet = "n";
         }
-    }
-
-    private void MergePrefabs(PrefabController otherPrefab)
-    {
-        int newPrefabNumber = prefabNumber + 1;
-
-        // Handle merging logic here (spawn a new prefab, update score, etc.)
-        gameManager.MergePrefabs(this, otherPrefab, newPrefabNumber);
-
-        // Destroy the current prefabs after merging
-        Destroy(gameObject);
-        Destroy(otherPrefab.gameObject);
     }
 }

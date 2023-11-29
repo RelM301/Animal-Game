@@ -4,41 +4,63 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public Transform spawnPoint; // Set this to the position where you want to spawn prefabs
-    public GameObject[] prefabArray; // Array of prefabs in order
-    private GameObject currentPrefab; // The currently spawned prefab
+    public Transform spawnPoint;
+    public Transform[] prefabObj;
+    private bool isDragging = false;
+    private string spawnedYet = "n";
+
+    public string SpawnedYet
+    {
+        get { return spawnedYet; }
+        set { spawnedYet = value; }
+    }
 
     private void Start()
     {
-        StartCoroutine(SpawnPrefabs());
-    }
-
-    private IEnumerator SpawnPrefabs()
-    {
-        for (int i = 0; i < prefabArray.Length; i++)
-        {
-            currentPrefab = SpawnPrefab(i);
-
-            // Wait for mouse button release before spawning the next prefab
-            yield return new WaitUntil(() => Input.GetMouseButtonUp(0));
-
-            // Additional logic after releasing prefab (if needed)
-        }
-    }
-
-    private GameObject SpawnPrefab(int prefabIndex)
-    {
-        GameObject prefabToSpawn = prefabArray[prefabIndex];
-        return Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
+        
     }
 
     private void Update()
     {
-        // Dragging behavior: Move the spawner left or right based on mouse movement
-        if (currentPrefab != null)
+        spawnPrefabs();
+
+        // Check if the left mouse button is pressed
+        if (Input.GetMouseButtonDown(0))
         {
-            float mouseX = Input.GetAxis("Mouse X");
-            currentPrefab.transform.position += new Vector3(mouseX, 0f, 0f);
+            isDragging = true;
+        }
+
+        // Check if the left mouse button is released
+        if (Input.GetMouseButtonUp(0))
+        {
+            isDragging = false;
+            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        }
+
+        // If the left mouse button is being held down, move the object
+        if (isDragging)
+        {
+            // Get the position of the mouse in screen space and convert it to world space
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // Set the velocity based on the difference between the current object position and the mouse position
+            GetComponent<Rigidbody2D>().velocity = new Vector2(mousePos.x - transform.position.x, 0);
+        }
+
+    }
+
+    void spawnPrefabs()
+    {
+        if (spawnedYet == "n")
+        {
+            StartCoroutine(spawnTimer());
+            spawnedYet = "y";
         }
     }
+
+    IEnumerator spawnTimer()
+    {
+        yield return new WaitForSeconds(.75f);
+        Instantiate(prefabObj[Random.Range(0, 4)], transform.position, prefabObj[0].rotation);
+    }
 }
+
