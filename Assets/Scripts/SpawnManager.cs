@@ -6,8 +6,11 @@ public class SpawnManager : MonoBehaviour
 {
     public Transform spawnPoint;
     public Transform[] prefabObj;
+    public Transform newSpawnPoint;
     private bool isDragging = false;
     private string spawnedYet = "n";
+    private string newPrefab = "n";
+    static public int whichPrefab = 0;
 
     public string SpawnedYet
     {
@@ -15,14 +18,21 @@ public class SpawnManager : MonoBehaviour
         set { spawnedYet = value; }
     }
 
+    public string NewPrefab
+    {
+        get { return newPrefab; }
+        set { newPrefab = value; }
+    }
+
     private void Start()
     {
-        
+       
     }
 
     private void Update()
     {
         spawnPrefabs();
+        replacePrefab();
 
         // Check if the left mouse button is pressed
         if (Input.GetMouseButtonDown(0))
@@ -54,6 +64,15 @@ public class SpawnManager : MonoBehaviour
         {
             StartCoroutine(spawnTimer());
             spawnedYet = "y";
+        }
+    }
+
+    void replacePrefab()
+    {
+        if (newPrefab == "y")
+        {
+            newPrefab = "n";
+            Instantiate(prefabObj[whichPrefab + 1], newSpawnPoint);
         }
     }
 

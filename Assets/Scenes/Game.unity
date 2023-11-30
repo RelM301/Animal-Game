@@ -1080,7 +1080,12 @@ MonoBehaviour:
   - {fileID: 5032888659094757836, guid: d2b597941044aad4cb669e01c33b7fb5, type: 3}
   - {fileID: 6899743145345475642, guid: 1bb730fcddda8414198e1589d816c1ca, type: 3}
   - {fileID: 9134911465309089131, guid: 2921c5bbbade1a142ad6b958010ed1b6, type: 3}
-  spawnedYet: n
+  - {fileID: 5214311422461111153, guid: dea857dcd30897f4dbbf28b8a8841240, type: 3}
+  - {fileID: 6196054887454965335, guid: c694effd062e36f40ac4631b57748a38, type: 3}
+  - {fileID: 4237735568253002631, guid: 6b9d73a9c9601834c89d47f7184d85c5, type: 3}
+  - {fileID: 6215485383087474198, guid: f6a1412960d801f4a8485b9815bcbcab, type: 3}
+  - {fileID: 1618364914690512574, guid: 681c9f0ff7fd8544395e0e1bc4ad2852, type: 3}
+  - {fileID: 7295142577433520596, guid: 8376fc10ca2ea3d4a94b10e18c88fd3c, type: 3}
 --- !u!212 &2055508401
 SpriteRenderer:
   m_ObjectHideFlags: 0

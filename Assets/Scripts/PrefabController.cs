@@ -10,6 +10,7 @@ public class PrefabController : MonoBehaviour
     private void Start()
     {
         spawnManager = FindObjectOfType<SpawnManager>();
+        
     }
 
     private void Update()
@@ -25,5 +26,24 @@ public class PrefabController : MonoBehaviour
             intheSpawner = "n";
             spawnManager.SpawnedYet = "n";
         }
+
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == gameObject.tag)
+        {
+            // Store the position before destroying the object
+            Vector3 spawnPosition = transform.position;
+
+            // Update spawnManager properties
+            spawnManager.newSpawnPoint = transform;
+            spawnManager.NewPrefab = "y";
+            SpawnManager.whichPrefab = int.Parse(gameObject.tag);
+
+            // Destroy the object
+            Destroy(gameObject);
+        }
+    }
+    
 }
+
