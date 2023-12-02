@@ -1,30 +1,40 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PrefabController : MonoBehaviour
 {
     private string intheSpawner = "y";
+    private string timeToCheck = "n";
     private SpawnManager spawnManager;
+    private GameManager gameManager;
 
     private void Start()
     {
         spawnManager = FindObjectOfType<SpawnManager>();
-        
+        gameManager = FindObjectOfType<GameManager>();
+        if (transform.position.y < 1.2)
+        {
+            intheSpawner = "n";
+            GetComponent<Rigidbody2D>().gravityScale = 1;
+        }
     }
 
     private void Update()
     {
-        if (intheSpawner == "y" && spawnManager != null)
+        if (intheSpawner == "y")
         {
             transform.position = spawnManager.spawnPoint.position;
         }
 
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0))
         {
             GetComponent<Rigidbody2D>().gravityScale = 1;
             intheSpawner = "n";
             spawnManager.SpawnedYet = "n";
+            StartCoroutine(checkGameOver());
         }
 
     }
@@ -32,18 +42,27 @@ public class PrefabController : MonoBehaviour
     {
         if (collision.gameObject.tag == gameObject.tag)
         {
-            // Store the position before destroying the object
-            Vector3 spawnPosition = transform.position;
-
-            // Update spawnManager properties
-            spawnManager.newSpawnPoint = transform;
+            SpawnManager.newSpawnPos = transform.position;
             spawnManager.NewPrefab = "y";
             SpawnManager.whichPrefab = int.Parse(gameObject.tag);
-
             // Destroy the object
             Destroy(gameObject);
         }
     }
-    
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if ((other.gameObject.name == "Top") && (timeToCheck == "y"))
+        {
+            gameManager.GameOver();
+            Debug.Log("Game Over");
+        }
+    }
+
+    IEnumerator checkGameOver()
+    {
+        yield return new WaitForSeconds(1f);
+        timeToCheck = "y";
+    }
 }
 

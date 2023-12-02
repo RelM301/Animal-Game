@@ -6,7 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
     public Transform spawnPoint;
     public Transform[] prefabObj;
-    public Transform newSpawnPoint;
+    public static Vector2 newSpawnPos;
     private bool isDragging = false;
     private string spawnedYet = "n";
     private string newPrefab = "n";
@@ -26,7 +26,7 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-       
+
     }
 
     private void Update()
@@ -63,7 +63,7 @@ public class SpawnManager : MonoBehaviour
         if (spawnedYet == "n")
         {
             StartCoroutine(spawnTimer());
-            spawnedYet = "y";
+            spawnedYet = "w";
         }
     }
 
@@ -72,7 +72,15 @@ public class SpawnManager : MonoBehaviour
         if (newPrefab == "y")
         {
             newPrefab = "n";
-            Instantiate(prefabObj[whichPrefab + 1], newSpawnPoint);
+            int nextIndex = whichPrefab + 1;
+            if (nextIndex < prefabObj.Length)
+            {
+                Instantiate(prefabObj[nextIndex], newSpawnPos, prefabObj[0].rotation);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -80,6 +88,7 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(.75f);
         Instantiate(prefabObj[Random.Range(0, 4)], transform.position, prefabObj[0].rotation);
+        spawnedYet = "y";
     }
 }
 
