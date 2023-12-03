@@ -10,6 +10,7 @@ public class SpawnManager : MonoBehaviour
     private bool isDragging = false;
     private string spawnedYet = "n";
     private string newPrefab = "n";
+    private GameObject lastPrefabInstance;
     static public int whichPrefab = 0;
 
     public string SpawnedYet
@@ -26,7 +27,7 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-
+        
     }
 
     private void Update()
@@ -56,6 +57,8 @@ public class SpawnManager : MonoBehaviour
             GetComponent<Rigidbody2D>().velocity = new Vector2(mousePos.x - transform.position.x, 0);
         }
 
+        Debug.DrawRay(spawnPoint.position, Vector2.down * 10f, Color.blue);
+        Debug.Log("RayVisible");
     }
 
     void spawnPrefabs()
@@ -75,12 +78,30 @@ public class SpawnManager : MonoBehaviour
             int nextIndex = whichPrefab + 1;
             if (nextIndex < prefabObj.Length)
             {
-                Instantiate(prefabObj[nextIndex], newSpawnPos, prefabObj[0].rotation);
+                // Instantiate the next prefab and store the reference
+                lastPrefabInstance = Instantiate(prefabObj[nextIndex].gameObject, newSpawnPos, prefabObj[0].rotation);
             }
             else
             {
-                Destroy(gameObject);
+                // If the index is out of bounds, destroy the last instantiated prefab
+                if (lastPrefabInstance != null)
+                {
+                    Destroy(lastPrefabInstance.gameObject);
+                }
             }
+        }
+    }
+
+    public void MergeSound()
+    {
+        AudioSource mergeSound = GetComponent<AudioSource>();
+        if (mergeSound != null)
+        {
+            mergeSound.PlayOneShot(mergeSound.clip);
+        }
+        else
+        {
+            Debug.LogError("AudioSource component not found on the SpawnManager.");
         }
     }
 
@@ -90,5 +111,12 @@ public class SpawnManager : MonoBehaviour
         Instantiate(prefabObj[Random.Range(0, 4)], transform.position, prefabObj[0].rotation);
         spawnedYet = "y";
     }
+
+    public void MergeMute()
+    {
+        AudioSource mergeSound = GetComponent<AudioSource>();
+        mergeSound.mute = !mergeSound.mute;
+    }
 }
+
 

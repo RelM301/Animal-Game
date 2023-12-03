@@ -10,6 +10,7 @@ public class PrefabController : MonoBehaviour
     private string timeToCheck = "n";
     private SpawnManager spawnManager;
     private GameManager gameManager;
+    public int prefabValue;
 
     private void Start()
     {
@@ -45,10 +46,14 @@ public class PrefabController : MonoBehaviour
             SpawnManager.newSpawnPos = transform.position;
             spawnManager.NewPrefab = "y";
             SpawnManager.whichPrefab = int.Parse(gameObject.tag);
+            spawnManager.MergeSound();
+            //Logic of the score
+            gameManager.UpdateScore(prefabValue);
             // Destroy the object
             Destroy(gameObject);
         }
     }
+
 
     private void OnTriggerStay2D(Collider2D other)
     {
